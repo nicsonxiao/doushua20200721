@@ -1,30 +1,44 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+// import Index from "../views/Index.vue";
+import Login from "../views/index/Login.vue";
+
+import adminRoute from "./admin";
+import agentRoute from "./agent";
+import userRoute from "./user";
+
 
 Vue.use(VueRouter);
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
-const routes = [
+let routes = [
+  {
+    path: "/login",
+    component: Login,
+    meta:{
+      title:"登录"
+    }
+  },
+  
   {
     path: "/",
-    name: "Home",
-    component: Home
-  },
-  {
-    path: "/about",
-    name: "About",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/About.vue")
+    component: Login,
+    meta:{
+      title:"首页"
+    }
   }
 ];
+routes = routes.concat(adminRoute).concat(agentRoute).concat(userRoute);
+
 
 const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes
 });
+
 
 export default router;
